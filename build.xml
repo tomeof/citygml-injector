@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="build" name="Build CityGMLInjector">
+	<property name="src" location="src" />
+	<property name="bin" location="bin" />
+	<property name="distribute" location="dist" />
+	<property name="folder" value="citygml-injector" />
+	<property name="version" value="0.1" />
+	
+	<target name="delete">
+		<delete dir="${distribute}" />
+	</target>
+	
+	<target name="timestamp" depends="delete">
+		<tstamp>
+			<format property="date-version" pattern="yyyyMMdd"/>
+		</tstamp>
+	</target>
+	
+	<target name="version" depends="timestamp">
+		<echo file="${src}/de/hft/stuttgart/citygmlinjector/values/Version.java">
+package de.hft.stuttgart.citygmlinjector.values;
+
+public class Version {
+	public static String NUMBER = "${version}.${date-version}";
+}
+		</echo>
+	</target>
+	
+	<target name="compile" depends="version">
+		<javac includeantruntime="false" 
+			source="1.8" 
+			target="1.8" 
+			srcdir="${src}" 
+			destdir="${bin}"
+			encoding="UTF-8" />
+	</target>
+	
+	<target name="build" depends="compile">
+		<mkdir dir="${distribute}/${folder}" />
+		<tstamp>
+		     <format property="date-version" pattern="yyyyMMdd"/>
+		</tstamp>
+		<jar destfile="${distribute}/${folder}/citygml-injector-${version}.${date-version}.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="de.hft.stuttgart.citygmlinjector.client.Instance"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+			<fileset dir="${bin}" />
+		</jar>
+		<echo file="${distribute}/${folder}/citygml-injector.bat">@echo off
+start javaw -jar citygml-injector-${version}.${date-version}.jar</echo>
+		<echo file="${distribute}/${folder}/citygml-injector.sh">#!/bin/bash
+java -jar citygml-injector-${version}.${date-version}.jar</echo>
+		<chmod file="${distribute}/${folder}/citygml-injector.sh" perm="775"/>
+	</target>
+</project>
