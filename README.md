@@ -16,9 +16,14 @@ Usage example:
 * Select the "Generate" item from the "Actions" list
 * Select the "xlink:href" item from the "Attributes" list
 * Use "Apply" button
+* Select the "bldg:BuildingPart" item from the "CityGML Elements" list
+* Select the "Generate" item from the "Actions" list
+* Select the "xlink:href" item from the "Attributes" list
+* Use "Apply" button
 * Use "Save" button
 
 Result:
 * The original CityGML file is overwritten
 * Polygons without gml:id have a new unique gml:id
 * Buildings in the city model expose solid geometry using xlinks
+* BuildingParts in the city model expose solid geometry using xlinks
