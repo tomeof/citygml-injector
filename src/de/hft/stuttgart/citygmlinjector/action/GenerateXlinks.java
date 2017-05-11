@@ -79,10 +79,13 @@ public class GenerateXlinks extends BaseAction implements IAction{
 				// append surfaceMember
 				CompositeSurface.appendChild(surfaceMember);
 			}
-			exterior.appendChild(CompositeSurface);
-			solid.appendChild(exterior);
-			lod.appendChild(solid);
-			currentNode.insertBefore(lod, currentNode.getFirstChild());
+			
+			if (CompositeSurface.hasChildNodes()) {
+				exterior.appendChild(CompositeSurface);
+				solid.appendChild(exterior);
+				lod.appendChild(solid);
+				currentNode.insertBefore(lod, currentNode.getFirstChild());
+			}
 			
 			lod = context.document.createElementNS("http://www.opengis.net/citygml/building/"+citygmlVersion, "bldg:"+levelOfDetail+"Solid");
 			solid = context.document.createElementNS("http://www.opengis.net/gml", "gml:Solid");
