@@ -29,15 +29,18 @@ import de.hft.stuttgart.citygmlinjector.values.Actions;
 import de.hft.stuttgart.citygmlinjector.values.Attributes;
 import de.hft.stuttgart.citygmlinjector.values.Version;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
@@ -70,21 +73,14 @@ public class Instance extends Application {
 		
 		// layout setup
 		GridPane gridpane = new GridPane();
+		gridpane.setPadding(new Insets(4, 4, 4, 4));
 		ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(28);
+        col1.setPercentWidth(33);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(28);
+        col2.setPercentWidth(34);
         ColumnConstraints col3 = new ColumnConstraints();
-        col3.setPercentWidth(28);
-        ColumnConstraints col4 = new ColumnConstraints();
-        col4.setPercentWidth(16);
-        gridpane.getColumnConstraints().addAll(col1,col2,col3,col4);
-        
-        RowConstraints row1 = new RowConstraints();
-        row1.setPercentHeight(70);
-        RowConstraints row2 = new RowConstraints();
-        row2.setPercentHeight(30);
-        gridpane.getRowConstraints().addAll(row1,row2);
+        col3.setPercentWidth(33);
+        gridpane.getColumnConstraints().addAll(col1,col2,col3);
         
         // buttons
         Button openButton = new Button("Open...");
@@ -94,6 +90,9 @@ public class Instance extends Application {
         applyButton.setMaxWidth(Double.MAX_VALUE);
         saveButton.setMaxWidth(Double.MAX_VALUE);
         
+        // progressbar
+        ProgressBar progressBar = new ProgressBar(0.0);
+        
         // vboxes
         VBox vbox1 = new VBox();
         vbox1.getChildren().addAll(new Label("CityGML Elements"), citygmlList);
@@ -102,22 +101,35 @@ public class Instance extends Application {
         VBox vbox2 = new VBox();
         vbox2.getChildren().addAll(new Label("Actions"), actionsList);
         VBox.setVgrow(actionsList, Priority.ALWAYS);
+        vbox2.setPadding(new Insets(0, 4, 0, 4));
         
         VBox vbox3 = new VBox();
         vbox3.getChildren().addAll(new Label("Attributes"), attributeList);
         VBox.setVgrow(attributeList, Priority.ALWAYS);
-
-        VBox vbox4 = new VBox();
-        vbox4.setSpacing(2);
-        vbox4.setAlignment(Pos.CENTER);
-        vbox4.getChildren().addAll(openButton , applyButton, saveButton);
         
+        // hboxes
+        HBox hbox1 = new HBox();
+        hbox1.getChildren().addAll(openButton , applyButton, saveButton, progressBar);
+        hbox1.setSpacing(4);
+        HBox hbox2 = new HBox();
+        hbox2.setAlignment(Pos.CENTER_RIGHT);
+        hbox2.getChildren().add(progressBar);
+        progressBar.prefHeightProperty().bind(hbox2.heightProperty());
+
+        // rows
+        RowConstraints row1 = new RowConstraints();
+        row1.prefHeightProperty().bind(gridpane.heightProperty().multiply(0.7).subtract(hbox1.getPrefHeight()));
+        RowConstraints row2 = new RowConstraints();
+        row2.prefHeightProperty().bind(gridpane.heightProperty().multiply(0.3).subtract(hbox1.getPrefHeight()));
+        RowConstraints row3 = new RowConstraints();
+        
+        gridpane.getRowConstraints().addAll(row1,row2,row3);
         gridpane.add(vbox1, 0, 0);
         gridpane.add(vbox2, 1, 0);
         gridpane.add(vbox3, 2, 0);
-        gridpane.add(vbox4, 3, 0);
-        gridpane.add(logField, 0, 1, 4, 1);
-        gridpane.setHgap(4);
+        gridpane.add(logField, 0, 1, 3, 1);
+        gridpane.add(hbox1, 0, 2, 2, 1);
+        gridpane.add(hbox2, 2, 2, 1, 1);
         gridpane.setVgap(4);
 		
 		// scene setup
@@ -140,6 +152,7 @@ public class Instance extends Application {
 		context.gui.openButton = openButton;
 		context.gui.applyButton = applyButton;
 		context.gui.saveButton = saveButton;
+		context.gui.progressBar = progressBar;
 		
 		@SuppressWarnings("unused")
 		Operations operations = new Operations(context);

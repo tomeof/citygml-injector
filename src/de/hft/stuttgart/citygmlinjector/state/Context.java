@@ -27,6 +27,7 @@ import org.w3c.dom.Document;
 import de.hft.stuttgart.citygmlinjector.validate.Validator;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
@@ -62,6 +63,7 @@ public class Context {
 	 	public Button openButton;
 	 	public Button applyButton;
 	 	public Button saveButton;
+	 	public ProgressBar progressBar;
 	}
 	
 	
