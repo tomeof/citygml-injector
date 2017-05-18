@@ -47,6 +47,7 @@ public class AllElementsSelected extends State{
 	
 	@Override
 	public void applyAction(Operations operations) {
+		operations.setState(new ActionInProgress());
 		operations.invokeApplyAction();
 	}
 	

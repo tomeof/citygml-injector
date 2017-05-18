@@ -50,6 +50,7 @@ import de.hft.stuttgart.citygmlinjector.validate.IsCityGml;
 import de.hft.stuttgart.citygmlinjector.validate.SelectionIsValid;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
@@ -112,7 +113,7 @@ public class Operations {
 		
 		NodeList citygmlNodes = doc.getElementsByTagName("*");
 		SortedSet<String> uniqueCitygmlNodes = new TreeSet<>();
-		for (int i=0; i<citygmlNodes.getLength(); i++) {
+		for (int i=0, leni = citygmlNodes.getLength(); i<leni; i++) {
 		    Element element = (Element) citygmlNodes.item(i);
 		    uniqueCitygmlNodes.add(element.getNodeName());
 		}
@@ -130,15 +131,42 @@ public class Operations {
 		String command = context.selectedAction + DASH + context.selectedAttribute;
 		ActionFactory factory = new ActionFactory(context);
 		IAction action = factory.makeAction(command);
-		action.applyAction();
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Applied action ");
 		stringBuilder.append(context.selectedAction);
 		stringBuilder.append(" ");
 		stringBuilder.append(context.selectedAttribute);
-		stringBuilder.append(" to CityGML element ");
+		stringBuilder.append(" for ");
 		stringBuilder.append(context.selectedElement);
+		stringBuilder.append("...");
 		log(stringBuilder.toString());
+		context.gui.progressBar.setProgress(-1);
+		Task<Void> task = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				action.applyAction();
+				return null;
+			}
+			
+			@Override
+			protected void succeeded() {
+				super.succeeded();
+				StringBuilder stringBuilder = new StringBuilder();
+				stringBuilder.append("Applied action ");
+				stringBuilder.append(context.selectedAction);
+				stringBuilder.append(" ");
+				stringBuilder.append(context.selectedAttribute);
+				stringBuilder.append(" to CityGML element ");
+				stringBuilder.append(context.selectedElement);
+				log(stringBuilder.toString());
+				context.gui.progressBar.setProgress(0.0);
+				setState(new AllElementsSelected());
+			}
+			
+		};
+		
+		Thread t = new Thread(task);
+		t.start();
 	}
 	
 	void invokeSaveFile() throws TransformerFactoryConfigurationError, TransformerException{
