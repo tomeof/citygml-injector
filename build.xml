@@ -3,10 +3,21 @@
 	<property name="src" location="src" />
 	<property name="bin" location="bin" />
 	<property name="distribute" location="dist" />
-	<property name="folder" value="citygml-injector" />
+	<property name="rootFolder" value="citygml-injector" />
+	<property name="libFolder" value="lib" />
+	<property name="appName" value="citygml-injector" />
 	<property name="version" value="0.1" />
 	
-	<target name="delete">
+	<target name="checkOperatingSystem">
+		<condition property="isLinux">
+			<os family="unix"/>
+		</condition>
+		<condition property="isWindows">
+			<os family="windows" />
+		</condition>
+	</target>
+	
+	<target name="delete" depends="checkOperatingSystem">
 		<delete dir="${distribute}" />
 	</target>
 	
@@ -36,21 +47,35 @@ public class Version {
 	</target>
 	
 	<target name="build" depends="compile">
-		<mkdir dir="${distribute}/${folder}" />
+		<mkdir dir="${distribute}/${rootFolder}" />
+		<mkdir dir="${distribute}/${rootFolder}/${libFolder}" />
 		<tstamp>
 		     <format property="date-version" pattern="yyyyMMdd"/>
 		</tstamp>
-		<jar destfile="${distribute}/${folder}/citygml-injector-${version}.${date-version}.jar" filesetmanifest="mergewithoutmain">
+		<jar destfile="${distribute}/${rootFolder}/${libFolder}/${appName}-${version}.${date-version}.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.hft.stuttgart.citygmlinjector.client.Instance"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
 			<fileset dir="${bin}" />
 		</jar>
-		<echo file="${distribute}/${folder}/citygml-injector.bat">@echo off
-start javaw -jar citygml-injector-${version}.${date-version}.jar</echo>
-		<echo file="${distribute}/${folder}/citygml-injector.sh">#!/bin/bash
-java -jar citygml-injector-${version}.${date-version}.jar</echo>
-		<chmod file="${distribute}/${folder}/citygml-injector.sh" perm="775"/>
+		<echo file="${distribute}/${rootFolder}/${appName}.bat">@echo off
+start javaw -jar ${libFolder}/${appName}-${version}.${date-version}.jar</echo>
+		<echo file="${distribute}/${rootFolder}/${appName}.sh">#!/bin/bash
+java -jar ${libFolder}/${appName}-${version}.${date-version}.jar</echo>
+		
+		<antcall target="doForLinux"></antcall>
+		<antcall target="doForWindows"></antcall>
 	</target>
+	
+	<target name="doForLinux" if="isLinux">
+		<echo message="Applying specific tasks for Linux OS"></echo>
+		<echo message="OS family is UNIX, changing mode of bash script to executable"></echo>
+		<chmod file="${distribute}/${rootFolder}/${appName}.sh" perm="775"/>
+	</target>
+	
+	<target name="doForWindows" if="isWindows">
+		<echo message="Applying specific tasks for Windows OS"></echo>
+	</target>
+	
 </project>
