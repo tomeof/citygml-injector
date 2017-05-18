@@ -36,7 +36,7 @@ public class RemoveAttribute extends BaseAction implements IAction{
 	public void applyAction() {
 		
 		NodeList selectedCitygmlNodes = context.document.getElementsByTagName(context.selectedElement);
-		for (int i=0; i<selectedCitygmlNodes.getLength(); i++) {
+		for (int i=0, leni = selectedCitygmlNodes.getLength(); i<leni; i++) {
 		    Element element = (Element) selectedCitygmlNodes.item(i);
 		    if (element.hasAttribute(context.selectedAttribute)) {
 		    	element.removeAttribute(context.selectedAttribute);

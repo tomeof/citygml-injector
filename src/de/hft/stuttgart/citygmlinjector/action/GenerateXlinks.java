@@ -59,7 +59,7 @@ public class GenerateXlinks extends BaseAction implements IAction{
 
 		
 		NodeList selectedNodes = context.document.getElementsByTagName(context.selectedElement);
-		for (int i=0; i<selectedNodes.getLength(); i++) {
+		for (int i=0, leni = selectedNodes.getLength(); i<leni; i++) {
 			Element currentNode = (Element) selectedNodes.item(i);
 			NodeList allPolygons = currentNode.getElementsByTagName("gml:Polygon");
 			boolean hasBuildingParts = (currentNode.getElementsByTagName("bldg:BuildingPart").getLength()>0);
@@ -68,7 +68,7 @@ public class GenerateXlinks extends BaseAction implements IAction{
 				allBpartPolygonIds = getBpartsPolygonIds(currentNode);
 			}
 			
-			for (int j=0; j<allPolygons.getLength(); j++) {
+			for (int j=0, lenj = allPolygons.getLength(); j<lenj; j++) {
 				Element polygon = (Element) allPolygons.item(j);
 				String polygonId = polygon.getAttribute("gml:id");
 				// don't use the polygons from building parts, if they exist
@@ -101,10 +101,10 @@ public class GenerateXlinks extends BaseAction implements IAction{
 		
 		ArrayList<String> result = new ArrayList<>();
 		NodeList allBuildingParts = fromNode.getElementsByTagName("bldg:BuildingPart");
-		for (int i=0; i<allBuildingParts.getLength(); i++) {
+		for (int i=0, leni = allBuildingParts.getLength(); i<leni; i++) {
 			Element bp = (Element) allBuildingParts.item(i);
 			NodeList bpAllPolygons = bp.getElementsByTagName("gml:Polygon");
-				for (int j=0; j<bpAllPolygons.getLength(); j++) {
+				for (int j=0, lenj = bpAllPolygons.getLength(); j<lenj; j++) {
 					Element polygon = (Element) bpAllPolygons.item(j);
 					String id = polygon.getAttribute("gml:id");
 					result.add(id);

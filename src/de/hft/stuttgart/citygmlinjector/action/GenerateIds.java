@@ -38,14 +38,12 @@ public class GenerateIds extends BaseAction implements IAction{
 	@Override
 	public void applyAction() {
 		NodeList selectedCitygmlNodes = context.document.getElementsByTagName(context.selectedElement);
-		for (int i=0; i<selectedCitygmlNodes.getLength(); i++) {
-		    Element element = (Element) selectedCitygmlNodes.item(i);
+		for (int i=0, leni = selectedCitygmlNodes.getLength(); i<leni; i++) {
+			Element element = (Element) selectedCitygmlNodes.item(i);
 		    if (!element.hasAttribute(Attributes.GMLID)) {
 		    	String newId = "uuid_" + UUID.randomUUID();
 		    	element.setAttribute(Attributes.GMLID, newId);
 			}
 		}
-		
 	}
-
 }
