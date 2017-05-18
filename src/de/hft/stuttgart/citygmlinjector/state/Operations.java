@@ -241,7 +241,7 @@ public class Operations {
 
 	private void validateSelection() {
 		SelectionIsValid selectionIsValid = new SelectionIsValid(context);
-		if (context.validator.validate(selectionIsValid)) {
+		if (context.validator.validate(selectionIsValid) && !(state instanceof ActionInProgress)) {
 			setState(new AllElementsSelected());
 		}
 	}
