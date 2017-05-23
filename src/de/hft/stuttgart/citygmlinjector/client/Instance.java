@@ -86,9 +86,6 @@ public class Instance extends Application {
         Button openButton = new Button("Open...");
         Button applyButton = new Button("Apply");
         Button saveButton = new Button("Save");
-        openButton.setMaxWidth(Double.MAX_VALUE);
-        applyButton.setMaxWidth(Double.MAX_VALUE);
-        saveButton.setMaxWidth(Double.MAX_VALUE);
         
         // progressbar
         ProgressBar progressBar = new ProgressBar(0.0);
@@ -109,7 +106,7 @@ public class Instance extends Application {
         
         // hboxes
         HBox hbox1 = new HBox();
-        hbox1.getChildren().addAll(openButton , applyButton, saveButton, progressBar);
+        hbox1.getChildren().addAll(openButton , applyButton, saveButton);
         hbox1.setSpacing(4);
         HBox hbox2 = new HBox();
         hbox2.setAlignment(Pos.CENTER_RIGHT);
