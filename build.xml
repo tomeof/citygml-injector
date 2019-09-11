@@ -49,14 +49,13 @@ public class Version {
 	<target name="build" depends="compile">
 		<mkdir dir="${distribute}/${rootFolder}" />
 		<mkdir dir="${distribute}/${rootFolder}/${libFolder}" />
-		<copy file="${libFolder}/jfxrt.jar" todir="${distribute}/${rootFolder}/${libFolder}"/>
 		<tstamp>
 		     <format property="date-version" pattern="yyyyMMdd"/>
 		</tstamp>
 		<jar destfile="${distribute}/${rootFolder}/${libFolder}/${appName}-${version}.${date-version}.jar" filesetmanifest="mergewithoutmain">
       <manifest>
           <attribute name="Main-Class" value="de.hft.stuttgart.citygmlinjector.client.Instance"/>
-          <attribute name="Class-Path" value="./jfxrt.jar"/>
+          <attribute name="Class-Path" value="."/>
       </manifest>
 			<fileset dir="${bin}" />
 		</jar>
