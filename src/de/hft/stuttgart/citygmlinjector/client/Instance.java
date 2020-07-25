@@ -20,6 +20,9 @@
 
 package de.hft.stuttgart.citygmlinjector.client;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import de.hft.stuttgart.citygmlinjector.state.Context;
@@ -28,6 +31,7 @@ import de.hft.stuttgart.citygmlinjector.validate.Validator;
 import de.hft.stuttgart.citygmlinjector.values.Actions;
 import de.hft.stuttgart.citygmlinjector.values.Attributes;
 import de.hft.stuttgart.citygmlinjector.values.Version;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -131,7 +135,16 @@ public class Instance extends Application {
 		
 		// scene setup
 		Scene scene = new Scene(gridpane, 700, 500);
-		Image icon = new Image("de/hft/stuttgart/citygmlinjector/resources/house_icon.png");
+		
+		Path currentRelativePath = Paths.get("");
+		File file = new File(currentRelativePath.toAbsolutePath().toString() + "/resources/house_icon.png");
+		
+		if (!file.exists()) {
+			file = new File(currentRelativePath.toAbsolutePath().toString() + "/../resources/house_icon.png");
+		}
+
+		String fileUrl = file.toURI().toURL().toString();
+		Image icon = new Image(fileUrl);
 		primaryStage.getIcons().add(icon);
 		primaryStage.setTitle("CityGML Injector " + Version.NUMBER);
 		primaryStage.setScene(scene);

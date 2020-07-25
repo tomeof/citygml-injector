@@ -46,8 +46,11 @@ import org.xml.sax.SAXException;
 import de.hft.stuttgart.citygmlinjector.action.ActionFactory;
 import de.hft.stuttgart.citygmlinjector.contract.IAction;
 import de.hft.stuttgart.citygmlinjector.exception.FileNotCityGmlException;
+import de.hft.stuttgart.citygmlinjector.util.CitygmlUtils;
+import de.hft.stuttgart.citygmlinjector.util.XmlUtils;
 import de.hft.stuttgart.citygmlinjector.validate.IsCityGml;
 import de.hft.stuttgart.citygmlinjector.validate.SelectionIsValid;
+import de.hft.stuttgart.citygmlinjector.values.Afix;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -59,6 +62,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class Operations {
 
 	private static final String DASH = "-";
+	private static final String BACK_SLASH = "\\";
 	private State state;
 	private Context context;
 	
@@ -173,11 +177,19 @@ public class Operations {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-		Result output = new StreamResult(context.loadedFile);
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		File outputFile = new File(
+				context.loadedFile.getParent() +
+				BACK_SLASH +
+				CitygmlUtils.getFileNameBase(context.loadedFile) +
+				Afix.FILENAME_SUFFIX +
+				CitygmlUtils.getFileExtension(context.loadedFile)
+		);
+		Result output = new StreamResult(outputFile);
+		XmlUtils.trimWhitespace(context.document.getDocumentElement());
 		Source input = new DOMSource(context.document);
 		transformer.transform(input, output);
-		log("Saved " + context.loadedFile.getAbsolutePath());
+		log("Saved " + outputFile.getAbsolutePath());
 	}
 	
 	
