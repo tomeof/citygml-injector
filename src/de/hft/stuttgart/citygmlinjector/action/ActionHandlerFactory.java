@@ -20,23 +20,44 @@
 
 package de.hft.stuttgart.citygmlinjector.action;
 
-import de.hft.stuttgart.citygmlinjector.contract.IAction;
+import java.util.HashMap;
 import de.hft.stuttgart.citygmlinjector.contract.IActionHandle;
-import de.hft.stuttgart.citygmlinjector.state.Context;
 
-public class GenerateXlinks extends BaseAction implements IAction{
+
+public class ActionHandlerFactory {
 	
-	public GenerateXlinks(Context context) {
-		super(context);
+	private static interface IActionHandlerCommand {
+		public IActionHandle make();
 	}
 	
-	@Override
-	public void applyAction() {
+	private HashMap<String, IActionHandlerCommand> map = new HashMap<String, IActionHandlerCommand>();
+	
+	public ActionHandlerFactory() {
+
 		
-		ActionHandlerFactory factory = new ActionHandlerFactory();
-		IActionHandle actionHandler = factory.makeActionHandler(context.selectedElement);
-		actionHandler.handle(context);
+		map.put("bldg:Building", new IActionHandlerCommand() {
+			public IActionHandle make() {
+				return new BuildingHandler();
+			}
+		});
 		
+		map.put("bldg:BuildingPart", new IActionHandlerCommand() {
+			public IActionHandle make() {
+				return new BuildingPartHandler();
+			}
+		});
+		
+	}
+	
+	public IActionHandle makeActionHandler(String command) {
+		IActionHandlerCommand actionCommand = map.get(command);
+
+		if (actionCommand != null)
+			return actionCommand.make();
+		else {
+			return null;
+		}
+
 	}
 	
 	
