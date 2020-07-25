@@ -134,7 +134,7 @@ public class Operations {
 	void invokeApplyAction(){
 		String command = context.selectedAction + DASH + context.selectedAttribute;
 		ActionFactory factory = new ActionFactory(context);
-		IAction action = factory.makeAction(command);
+		final IAction action = factory.makeAction(command);
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(context.selectedAction);
 		stringBuilder.append(" ");
