@@ -2,3 +2,5 @@
 /dist
 *.bak
 .settings
+/modules/citygml.injector/de
+/modules/citygml.injector/*.class

@@ -1,81 +1,91 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="build" name="Build CityGMLInjector">
-	<property name="src" location="src" />
-	<property name="bin" location="bin" />
-	<property name="distribute" location="dist" />
-	<property name="rootFolder" value="citygml-injector" />
-	<property name="libFolder" value="lib" />
-	<property name="appName" value="citygml-injector" />
-	<property name="version" value="0.1" />
-	
-	<target name="checkOperatingSystem">
-		<condition property="isLinux">
-			<os family="unix"/>
-		</condition>
-		<condition property="isWindows">
-			<os family="windows" />
-		</condition>
-	</target>
-	
-	<target name="delete" depends="checkOperatingSystem">
-		<delete dir="${distribute}" />
-	</target>
-	
-	<target name="timestamp" depends="delete">
-		<tstamp>
-			<format property="date-version" pattern="yyyyMMdd"/>
-		</tstamp>
-	</target>
-	
-	<target name="version" depends="timestamp">
-		<echo file="${src}/de/hft/stuttgart/citygmlinjector/values/Version.java">
-package de.hft.stuttgart.citygmlinjector.values;
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project default="build" name="Build CityGMLInjector" basedir=".">
 
-public class Version {
-	public static String NUMBER = "${version}.${date-version}";
-}
+	<property name="version" value="1.1.1" />
+	<property name="javahome" value="C:\Program Files\Java\jdk-14.0.2\" />
+	<property name="javafxhome" value="C:\Program Files\JavaFX\javafx-sdk-11.0.2\" />
+	<property name="javafxmods" value="C:\Program Files\JavaFX\javafx-jmods-11.0.2\" />
+	<property name="appName" value="citygml-injector" />
+	<property name="src" location="src" />
+	<property name="resources" location="resources" />
+	<property name="buildFolder" location="dist" />
+	<property name="moduleName" value="citygml.injector" />
+
+	<target name="clean">
+		<delete dir="${buildFolder}" />
+		<mkdir dir="${buildFolder}" />
+		<mkdir dir="${buildFolder}/modules" />
+		<mkdir dir="${buildFolder}/modules/${moduleName}" />
+	</target>
+
+	<target name="copy-source">
+		<copy todir="${buildFolder}/src">
+			<fileset dir="${src}" />
+		</copy>
+	</target>
+
+	<target name="compile">
+		<exec executable="${javahome}\bin\javac" dir="${buildFolder}">
+			<arg value="--module-path" />
+			<arg value="${javafxhome}/lib" />
+			<arg value="-d" />
+			<arg value="modules/${moduleName}" />
+			<arg value="@srclist.txt" />
+		</exec>
+	</target>
+
+	<target name="generate-file-list">
+	    <pathconvert property="src.files" pathsep="${line.separator}">
+	        <fileset dir="${buildFolder}/src" />
+	    </pathconvert>
+	    <echo file="${buildFolder}/srclist.txt" message="${src.files}" />
+	</target>
+	
+	<target name="image">
+		<exec executable="${javahome}\bin\jlink" dir="${basedir}">
+			<arg value="--module-path" />
+			<arg value="${javafxmods};${buildFolder}/modules" />
+			<arg value="--add-modules" />
+			<arg value="${moduleName}" />
+			<arg value="--launcher"/>
+			<arg value="citygml-injector=${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance"/>		
+			<arg value="--output" />
+			<arg value="${buildFolder}/${appName}" />
+		</exec>
+	</target>
+	
+	<target name="copy-resources">
+		<copy todir="${buildFolder}/${appName}/resources">
+			<fileset dir="${resources}" />
+		</copy>
+	</target>
+	
+	<target name="create-bat">
+		<echo file="${buildFolder}/${appName}/${appName}.bat">
+			@echo off
+			set JLINK_VM_OPTIONS=
+			set DIR=%~dp0
+			"%DIR%\bin\java" %JLINK_VM_OPTIONS% -m ${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance %*
 		</echo>
 	</target>
 	
-	<target name="compile" depends="version">
-		<javac includeantruntime="false" 
-			source="1.8" 
-			target="1.8" 
-			srcdir="${src}" 
-			destdir="${bin}"
-			encoding="UTF-8" />
+	<target name="cleanup">
+		<delete file="${buildFolder}/${appName}/bin/citygml-injector.bat"/>
+		<delete file="${buildFolder}/${appName}/bin/citygml-injector"/>
+		<delete file="${buildFolder}/srclist.txt"/>
+		<delete dir="${buildFolder}/src"/>
+		<delete dir="${buildFolder}/modules"/>
 	</target>
-	
-	<target name="build" depends="compile">
-		<mkdir dir="${distribute}/${rootFolder}" />
-		<mkdir dir="${distribute}/${rootFolder}/${libFolder}" />
-		<tstamp>
-		     <format property="date-version" pattern="yyyyMMdd"/>
-		</tstamp>
-		<jar destfile="${distribute}/${rootFolder}/${libFolder}/${appName}-${version}.${date-version}.jar" filesetmanifest="mergewithoutmain">
-      <manifest>
-          <attribute name="Main-Class" value="de.hft.stuttgart.citygmlinjector.client.Instance"/>
-          <attribute name="Class-Path" value="."/>
-      </manifest>
-			<fileset dir="${bin}" />
-		</jar>
-		<echo file="${distribute}/${rootFolder}/${appName}.bat">@echo off
-start javaw -jar ${libFolder}/${appName}-${version}.${date-version}.jar</echo>
-		<echo file="${distribute}/${rootFolder}/${appName}.sh">#!/bin/bash
-java -jar ${libFolder}/${appName}-${version}.${date-version}.jar</echo>
-		
-		<antcall target="doForLinux"></antcall>
-		<antcall target="doForWindows"></antcall>
+
+	<target name="build">
+		<antcall target="clean"></antcall>
+		<antcall target="copy-source"></antcall>
+		<antcall target="generate-file-list"></antcall>
+		<antcall target="compile"></antcall>
+		<antcall target="image"></antcall>
+		<antcall target="copy-resources"></antcall>
+		<antcall target="create-bat"></antcall>
+		<antcall target="cleanup"></antcall>
 	</target>
-	
-	<target name="doForLinux" if="isLinux">
-		<echo message="Applying specific tasks for Linux OS"></echo>
-		<echo message="OS family is UNIX, changing mode of bash script to executable"></echo>
-		<chmod file="${distribute}/${rootFolder}/${appName}.sh" perm="775"/>
-	</target>
-	
-	<target name="doForWindows" if="isWindows">
-		<echo message="Applying specific tasks for Windows OS"></echo>
-	</target>
-	
+
 </project>

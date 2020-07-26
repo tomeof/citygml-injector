@@ -1,4 +1,4 @@
-module CityGMLInjector {
+module citygml.injector {
 	exports de.hft.stuttgart.citygmlinjector.state;
 	exports de.hft.stuttgart.citygmlinjector.util;
 	exports de.hft.stuttgart.citygmlinjector.contract;
