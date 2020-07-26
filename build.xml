@@ -24,6 +24,13 @@
 		</copy>
 	</target>
 
+	<target name="generate-file-list">
+	    <pathconvert property="src.files" pathsep="${line.separator}">
+	        <fileset dir="${buildFolder}/src" />
+	    </pathconvert>
+	    <echo file="${buildFolder}/srclist.txt" message="${src.files}" />
+	</target>
+
 	<target name="compile">
 		<exec executable="${javahome}\bin\javac" dir="${buildFolder}">
 			<arg value="--module-path" />
@@ -33,14 +40,7 @@
 			<arg value="@srclist.txt" />
 		</exec>
 	</target>
-
-	<target name="generate-file-list">
-	    <pathconvert property="src.files" pathsep="${line.separator}">
-	        <fileset dir="${buildFolder}/src" />
-	    </pathconvert>
-	    <echo file="${buildFolder}/srclist.txt" message="${src.files}" />
-	</target>
-	
+		
 	<target name="image">
 		<exec executable="${javahome}\bin\jlink" dir="${basedir}">
 			<arg value="--module-path" />
