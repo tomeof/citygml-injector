@@ -4,9 +4,10 @@ CityGML Injector is a Java software for editing a CityGML file.
 The main scope of the application is to create a building's solid geometry using polygons from boundary surfaces.
 
 Prerequisites:
-* Java 8 runtime environment
+* Nothing. You do not need the Java Runtime installed. For the moment only a windows version is available.
 
 Usage example:
+* Run the citygml-injector.bat file
 * Use "Open..." button to open a CityGML file
 * Select the "gml:polygon" item from the "CityGML Elements" list
 * Select the "Generate" item from the "Actions" list
@@ -23,7 +24,8 @@ Usage example:
 * Use "Save" button
 
 Result:
-* The original CityGML file is overwritten
+* A new CityGML file was created inside the folder of the original CityGML file.
+* The new CityGML filename has a suffix of "inj". 
 * Polygons without gml:id have a new unique gml:id
 * Buildings in the city model expose solid geometry using xlinks
 * BuildingParts in the city model expose solid geometry using xlinks
