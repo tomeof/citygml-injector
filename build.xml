@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <project default="build" name="Build CityGMLInjector" basedir=".">
 
-	<property name="version" value="1.1.1" />
 	<property name="javahome" value="C:\Program Files\Java\jdk-14.0.2\" />
 	<property name="javafxhome" value="C:\Program Files\JavaFX\javafx-sdk-11.0.2\" />
 	<property name="javafxmods" value="C:\Program Files\JavaFX\javafx-jmods-11.0.2\" />
@@ -10,6 +9,7 @@
 	<property name="resources" location="resources" />
 	<property name="buildFolder" location="dist" />
 	<property name="moduleName" value="citygml.injector" />
+	<property name="version" value="0.1" />
 
 	<target name="clean">
 		<delete dir="${buildFolder}" />
@@ -17,7 +17,20 @@
 		<mkdir dir="${buildFolder}/modules" />
 		<mkdir dir="${buildFolder}/modules/${moduleName}" />
 	</target>
+	
+	<target name="version">
+		<tstamp>
+			<format property="date-version" pattern="yyyyMMdd"/>
+		</tstamp>
+		<echo file="${src}/de/hft/stuttgart/citygmlinjector/values/Version.java">
+package de.hft.stuttgart.citygmlinjector.values;
 
+public class Version {
+	public static String NUMBER = "${version}.${date-version}";
+}
+		</echo>	
+	</target>
+	
 	<target name="copy-source">
 		<copy todir="${buildFolder}/src">
 			<fileset dir="${src}" />
@@ -76,9 +89,17 @@
 		<delete dir="${buildFolder}/src"/>
 		<delete dir="${buildFolder}/modules"/>
 	</target>
+			
+	<target name="zip">
+		<tstamp>
+			<format property="date-version" pattern="yyyyMMdd"/>
+		</tstamp>
+		<zip destfile="${buildFolder}/${appName}-${version}.${date-version}.zip" basedir="${buildFolder}"/>
+	</target>
 
 	<target name="build">
 		<antcall target="clean"></antcall>
+		<antcall target="version"></antcall>
 		<antcall target="copy-source"></antcall>
 		<antcall target="generate-file-list"></antcall>
 		<antcall target="compile"></antcall>
@@ -86,6 +107,7 @@
 		<antcall target="copy-resources"></antcall>
 		<antcall target="create-bat"></antcall>
 		<antcall target="cleanup"></antcall>
+		<antcall target="zip"></antcall>
 	</target>
 
 </project>
