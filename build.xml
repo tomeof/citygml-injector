@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <project default="build" name="Build CityGMLInjector" basedir=".">
 
-	<property name="javahome" value="C:\Program Files\Java\jdk-14.0.2\" />
+	<property name="javahome" value="${java.home}" />
 	<property name="javafxhome" value="C:\Program Files\JavaFX\javafx-sdk-11.0.2\" />
 	<property name="javafxmods" value="C:\Program Files\JavaFX\javafx-jmods-11.0.2\" />
 	<property name="appName" value="citygml-injector" />
