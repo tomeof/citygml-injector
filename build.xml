@@ -9,6 +9,7 @@
 	<property name="resources" location="resources" />
 	<property name="buildFolder" location="dist" />
 	<property name="moduleName" value="citygml.injector" />
+	<property name="mainClass" value="de.hft.stuttgart.citygmlinjector.client.Instance" />
 	<property name="version" value="0.1" />
 
 	<target name="clean">
@@ -61,7 +62,7 @@ public class Version {
 			<arg value="--add-modules" />
 			<arg value="${moduleName}" />
 			<arg value="--launcher"/>
-			<arg value="citygml-injector=${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance"/>		
+			<arg value="${appName}=${moduleName}/${mainClass}"/>		
 			<arg value="--output" />
 			<arg value="${buildFolder}/${appName}" />
 		</exec>
@@ -74,17 +75,15 @@ public class Version {
 	</target>
 	
 	<target name="create-bat">
-		<echo file="${buildFolder}/${appName}/${appName}.bat">
-@echo off
+		<echo file="${buildFolder}/${appName}/${appName}.bat">@echo off
 set JLINK_VM_OPTIONS=
 set DIR=%~dp0
-"%DIR%\bin\java" %JLINK_VM_OPTIONS% -m ${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance %*
-		</echo>
+"%DIR%\bin\java" %JLINK_VM_OPTIONS% -m ${moduleName}/${mainClass} %*</echo>
 	</target>
 	
 	<target name="cleanup">
-		<delete file="${buildFolder}/${appName}/bin/citygml-injector.bat"/>
-		<delete file="${buildFolder}/${appName}/bin/citygml-injector"/>
+		<delete file="${buildFolder}/${appName}/bin/${appName}.bat"/>
+		<delete file="${buildFolder}/${appName}/bin/${appName}"/>
 		<delete file="${buildFolder}/srclist.txt"/>
 		<delete dir="${buildFolder}/src"/>
 		<delete dir="${buildFolder}/modules"/>
