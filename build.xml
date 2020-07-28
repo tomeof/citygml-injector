@@ -75,10 +75,10 @@ public class Version {
 	
 	<target name="create-bat">
 		<echo file="${buildFolder}/${appName}/${appName}.bat">
-			@echo off
-			set JLINK_VM_OPTIONS=
-			set DIR=%~dp0
-			"%DIR%\bin\java" %JLINK_VM_OPTIONS% -m ${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance %*
+@echo off
+set JLINK_VM_OPTIONS=
+set DIR=%~dp0
+"%DIR%\bin\java" %JLINK_VM_OPTIONS% -m ${moduleName}/de.hft.stuttgart.citygmlinjector.client.Instance %*
 		</echo>
 	</target>
 	
